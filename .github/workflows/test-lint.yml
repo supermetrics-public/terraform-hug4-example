@@ -11,7 +11,7 @@ on:
 
 jobs:
   baseline_checks:
-    runs-on: [ ubuntu-latest ]
+    runs-on: [ubuntu-latest]
 
     steps:
       - name: 'Checkout'
