@@ -5,7 +5,7 @@ terraform {
 }
 
 module "demo_hug_me_cf_zone" {
-  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-zone?ref=feature/add-cf-base-tf-modules"
+  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-zone?ref=master"
 
   zone = "demo-hug.me"
   plan = "free"
