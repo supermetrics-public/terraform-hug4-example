@@ -1,7 +1,9 @@
 data "terraform_remote_state" "demo_hug_me_cf_zone" {
-  backend = "local"
+  backend = "gcs"
+
   config = {
-    path = "../../../../.tfstate-cloudflare/demo/hug-me/demo-hug-me-cf-zone/terraform.tfstate"
+    bucket = "sm-terraform-hug4-demo-state-files"
+    prefix = "cloudflare/demo/hug-me/demo-hug-me-cf-zone"
   }
 }
 
@@ -19,11 +21,9 @@ data "terraform_remote_state" "aiven_replica_demodb1" {
 }
 
 data "terraform_remote_state" "demo_hug_me_cf_zone" {
-  backend = "gcs"
-
+  backend = "local"
   config = {
-    bucket  = "gcs-demo-hug-tf-states"
-    prefix = "cloudflare/demo/zone"
+    path = "../../../../.tfstate-cloudflare/demo/hug-me/demo-hug-me-cf-zone/terraform.tfstate"
   }
 }
 

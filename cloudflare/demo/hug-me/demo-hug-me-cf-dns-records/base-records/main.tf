@@ -3,13 +3,13 @@ terraform {
   backend "s3" {
   }
 }
-*/
 
 terraform {
   backend "local" {
     path = "../../../../.tfstate-cloudflare/demo/hug-me/demo-hug-me-cf-dns-records/base-records/terraform.tfstate"
   }
 }
+*/
 
 locals {
   bucket_prefix = var.profile_bucket_prefix_map[var.profile]
