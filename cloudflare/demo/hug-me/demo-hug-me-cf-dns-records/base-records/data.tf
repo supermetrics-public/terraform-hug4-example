@@ -3,7 +3,7 @@ data "terraform_remote_state" "demo_hug_me_cf_zone" {
 
   config = {
     bucket = "sm-terraform-hug4-demo-state-files"
-    prefix = "cloudflare/demo/hug-me/demo-hug-me-cf-zone"
+    prefix = "europe-west1/central/demo/hug-me/demo-hug-me-cf-zone"
   }
 }
 
@@ -26,6 +26,4 @@ data "terraform_remote_state" "demo_hug_me_cf_zone" {
     path = "../../../../.tfstate-cloudflare/demo/hug-me/demo-hug-me-cf-zone/terraform.tfstate"
   }
 }
-
 */
-
