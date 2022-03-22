@@ -11,6 +11,10 @@ terraform {
 }
 */
 
+terraform {
+  backend "gcs" {}
+}
+
 locals {
   bucket_prefix = var.profile_bucket_prefix_map[var.profile]
   profile       = var.aws_profile_map[var.profile]
