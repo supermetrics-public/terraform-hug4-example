@@ -1,0 +1,103 @@
+#!/usr/bin/env bash
+
+#
+# Wrapper script for terraform/terragrunt command.
+# Usage: /bin/bash terraform_wrapper [validate|plan|apply|output|destroy] path/to/terraform/resource
+#
+
+if [ -n "$DEBUG" ]; then
+    set -x
+fi
+
+set -e
+
+if [ $# -ne 2 ]; then
+    echo "Usage: $0 [validate|plan|apply|output|destroy] path/to/terraform/resource"
+    exit 1
+fi
+
+TF_COMMAND=${1}
+
+# Bring in $2 => TF_PATH, AND drop possible 'main.tf' in case of copy/paste from `git status` output
+TF_PATH=${2/main.tf}
+
+TERRAFORM_VERSION_0_12=0.12.31
+TERRAFORM_VERSION_0_13=0.13.7
+TERRAGRUNT_VERSION="0.28.24"
+
+TF012_FILE="TF_0_12"
+TF013_FILE="TF_0_13"
+
+check_terraform_version()
+{
+    if [ "$(terraform --version | head -n1)" != "Terraform v$1" ]; then
+        echo "Try to switch Terraform version using tfenv..."
+
+        if tfenv use $1; then
+            echo "Current Terraform version is: $(terraform --version | head -n1)"
+        else
+            echo "Terraform must be version: $1"
+            echo "Download the required terraform version from https://releases.hashicorp.com/terraform/ or use *tfenv* to manage Terraform version"
+            exit 1
+        fi
+    else
+        echo "Current Terraform version is: $(terraform --version | head -n1)"
+    fi
+}
+
+check_terragrunt_version()
+{
+    if [ "$(terragrunt --version | grep 'terragrunt version')" != "terragrunt version v$TERRAGRUNT_VERSION" ]; then
+        echo "Terragrunt must be version: $TERRAGRUNT_VERSION"
+        echo "Download the required terragrunt version from https://terragrunt.gruntwork.io/docs/getting-started/install/ or use *tgenv* to manage Terraform version"
+        exit 1
+    else
+        echo "Current Terragrunt version is: $(terragrunt --version | grep 'terragrunt version')"
+    fi
+}
+
+if [[ $TF_PATH == *"gcp"* ]] || [[ $TF_PATH == *"datadog"* ]] || [[ $TF_PATH == *"cloudflare"* ]]; then
+    # Workaround to use TF12 if the path maybe contains one of the names above :facepalm:
+    if [[ -e "$TF_PATH/$TF012_FILE" ]]; then
+      check_terraform_version ${TERRAFORM_VERSION_0_12}
+    else
+      check_terraform_version ${TERRAFORM_VERSION_0_13}
+    fi
+else
+    # Workaround to use TF13 in some specific modules when needed - this could help to upgrade the module to TF13 gradually
+    if [[ -e "$TF_PATH/$TF013_FILE" ]]; then
+        check_terraform_version ${TERRAFORM_VERSION_0_13}
+    else
+        check_terraform_version ${TERRAFORM_VERSION_0_12}
+    fi
+fi
+
+check_terragrunt_version
+
+if [ "$(ls $TF_PATH | grep terragrunt.hcl | head -n1)" == "terragrunt.hcl" ]; then
+    CMD="terragrunt init && terragrunt get -update && terragrunt $TF_COMMAND"
+    echo "Running Terragrunt command: $CMD"
+else
+    if [ "$(ls $TF_PATH | grep backend-dev.tfvars | head -n1)" == "backend-dev.tfvars" ]; then
+        if [ "$TF_COMMAND" == "output" ]; then
+            CMD="terraform init -backend-config=\"backend-dev.tfvars\" && terraform $TF_COMMAND"
+        else
+            CMD="terraform init -backend-config=\"backend-dev.tfvars\" && terraform $TF_COMMAND --var profile=dev"
+        fi
+    elif [ "$(ls $TF_PATH | grep backend.tfvars | head -n1)" == "backend.tfvars" ]; then
+        if [ "$TF_COMMAND" == "output" ]; then
+            CMD="terraform init -backend-config=\"backend.tfvars\" && terraform $TF_COMMAND"
+        else
+            CMD="terraform init -backend-config=\"backend.tfvars\" && terraform $TF_COMMAND --var profile=prod"
+        fi
+    else
+        if [[ $TF_PATH == *"gcp_baseline"* ]]; then
+            CMD="terragrunt $TF_COMMAND"
+        else
+            CMD="terraform init && terraform $TF_COMMAND"
+        fi
+    fi 
+    echo "Running Terraform command: $CMD at $TF_PATH"
+fi
+
+cd $TF_PATH && eval $CMD
