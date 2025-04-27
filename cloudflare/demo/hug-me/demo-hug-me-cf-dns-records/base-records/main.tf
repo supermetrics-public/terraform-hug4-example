@@ -21,7 +21,7 @@ locals {
 }
 
 module "demo_hug_me_a1" {
-  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.1"
+  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.2"
 
   zone_id = data.terraform_remote_state.demo_hug_me_cf_zone.outputs.cf_zone_id
   name    = "demo-hug.me"
@@ -30,7 +30,7 @@ module "demo_hug_me_a1" {
 }
 
 module "demo_hug_me_a2" {
-  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.1"
+  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.2"
 
   zone_id = data.terraform_remote_state.demo_hug_me_cf_zone.outputs.cf_zone_id
   name    = "*.demo-hug.me"
@@ -39,7 +39,7 @@ module "demo_hug_me_a2" {
 }
 
 module "demo_hug_me_cname_aiven_replica_demodb1" {
-  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.1"
+  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.2"
 
   zone_id = data.terraform_remote_state.demo_hug_me_cf_zone.outputs.cf_zone_id
   name    = "aiven-replica-demodb1"
@@ -51,7 +51,7 @@ module "demo_hug_me_cname_aiven_replica_demodb1" {
 }
 
 module "demo_hug_me_txt_1" {
-  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.1"
+  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.2"
 
   zone_id = data.terraform_remote_state.demo_hug_me_cf_zone.outputs.cf_zone_id
   name    = "demo-hug.me"
@@ -60,7 +60,7 @@ module "demo_hug_me_txt_1" {
 }
 
 module "demo_hug_me_txt_3" {
-  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.1"
+  source = "git@github.com:supermetrics-public/terraform-modules-cicd-example.git//examples/cloudflare-simple-modules/cf-example-record?ref=v1.0.2"
 
   zone_id = data.terraform_remote_state.demo_hug_me_cf_zone.outputs.cf_zone_id
   name    = "*.demo-hug.me"
