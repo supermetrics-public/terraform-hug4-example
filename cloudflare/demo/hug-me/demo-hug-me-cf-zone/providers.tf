@@ -20,6 +20,6 @@ provider "google" {
 }
 
 provider "google-beta" {
-  version      = "3.58.0"
+  version      = "7.31.0"
   access_token = data.google_service_account_access_token.sa.access_token
 }
